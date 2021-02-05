@@ -16,6 +16,7 @@ describe("DocumentList Component Testsuite", () => {
       },
     },
   ];
+  const reloadDocumentList = jest.fn();
 
   beforeEach(() => {
     window.open = jest.fn();
@@ -23,7 +24,11 @@ describe("DocumentList Component Testsuite", () => {
 
   test("Matches the snapshot", async () => {
     const { asFragment } = render(
-      <DocumentList packageId={packageId} documents={documents} />
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
     );
     await waitFor(() => {});
     expect(asFragment()).toMatchSnapshot();
@@ -34,7 +39,11 @@ describe("DocumentList Component Testsuite", () => {
     pkgRvwService.downloadSubmittedDocument = jest.fn(() => Promise.resolve());
 
     const { container } = render(
-      <DocumentList packageId={packageId} documents={documents} />
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
     );
     await waitFor(() => {});
 
@@ -54,7 +63,11 @@ describe("DocumentList Component Testsuite", () => {
     );
 
     const { container } = render(
-      <DocumentList packageId={packageId} documents={documents} />
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
     );
     await waitFor(() => {});
 
@@ -73,7 +86,11 @@ describe("DocumentList Component Testsuite", () => {
     pkgRvwService.downloadSubmittedDocument = jest.fn(() => Promise.resolve());
 
     const { container } = render(
-      <DocumentList packageId={packageId} documents={documents} />
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
     );
     await waitFor(() => {});
 
@@ -93,7 +110,11 @@ describe("DocumentList Component Testsuite", () => {
     pkgRvwService.downloadSubmittedDocument = jest.fn(() => Promise.resolve());
 
     const { container } = render(
-      <DocumentList packageId={packageId} documents={documents} />
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
     );
     await waitFor(() => {});
 
@@ -108,7 +129,7 @@ describe("DocumentList Component Testsuite", () => {
     expect(pkgRvwService.downloadSubmittedDocument).not.toHaveBeenCalled();
   });
 
-  test("Download document (click) fail", async () => {
+  test("Download document (keyDown) fail", async () => {
     const errorMessage = "Network Error";
     // stub out service to return failed response.
     pkgRvwService.downloadSubmittedDocument = jest.fn(() =>
@@ -116,7 +137,11 @@ describe("DocumentList Component Testsuite", () => {
     );
 
     const { container } = render(
-      <DocumentList packageId={packageId} documents={documents} />
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
     );
     await waitFor(() => {});
 
@@ -129,6 +154,113 @@ describe("DocumentList Component Testsuite", () => {
 
     expect.assertions(1);
     expect(pkgRvwService.downloadSubmittedDocument()).rejects.toThrow(
+      errorMessage
+    );
+  });
+
+  test("Delete document (click) success", async () => {
+    // stub out service to return valid response.
+    pkgRvwService.deleteSubmittedDocument = jest.fn(() => Promise.resolve());
+
+    const { container } = render(
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
+    );
+    await waitFor(() => {});
+
+    // get the span wrapping the file link, click it.
+    fireEvent.click(getByText(container, "withdraw"));
+    await waitFor(() => {});
+
+    expect.assertions(1);
+    expect(pkgRvwService.deleteSubmittedDocument()).resolves.not.toThrow();
+  });
+
+  test("Delete document (click) fail", async () => {
+    const errorMessage = "Network Error";
+    // stub out service to return failed response.
+    pkgRvwService.deleteSubmittedDocument = jest.fn(() =>
+      Promise.reject(new Error(errorMessage))
+    );
+
+    const { container } = render(
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
+    );
+    await waitFor(() => {});
+
+    // get the span wrapping the file link, click it.
+    fireEvent.click(getByText(container, "withdraw"));
+    await waitFor(() => {});
+
+    expect.assertions(1);
+    expect(pkgRvwService.deleteSubmittedDocument()).rejects.toThrow(
+      errorMessage
+    );
+  });
+
+  test("Delete document (keyDown=13) success", async () => {
+    // stub out service to return valid response.
+    pkgRvwService.deleteSubmittedDocument = jest.fn(() => Promise.resolve());
+
+    const { container } = render(
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
+    );
+    await waitFor(() => {});
+
+    // get the span wrapping the file link, click it.
+    fireEvent.keyDown(getByText(container, "withdraw"), {
+      key: "Enter",
+      keyCode: "13",
+    });
+    await waitFor(() => {});
+
+    expect.assertions(1);
+    expect(pkgRvwService.deleteSubmittedDocument()).resolves.not.toThrow();
+
+    // get the span wrapping the file link, click it.
+    fireEvent.keyDown(getByText(container, "withdraw"));
+    await waitFor(() => {});
+
+    expect.assertions(2);
+    expect(pkgRvwService.deleteSubmittedDocument()).resolves.not.toThrow();
+  });
+
+  test("Delete document (keyDown) fail", async () => {
+    const errorMessage = "Network Error";
+    // stub out service to return failed response.
+    pkgRvwService.deleteSubmittedDocument = jest.fn(() =>
+      Promise.reject(new Error(errorMessage))
+    );
+
+    const { container } = render(
+      <DocumentList
+        packageId={packageId}
+        documents={documents}
+        reloadDocumentList={reloadDocumentList}
+      />
+    );
+    await waitFor(() => {});
+
+    // get the span wrapping the file link, click it.
+    fireEvent.keyDown(getByText(container, "withdraw"), {
+      key: "Enter",
+      keyCode: "13",
+    });
+    await waitFor(() => {});
+
+    expect.assertions(1);
+    expect(pkgRvwService.deleteSubmittedDocument()).rejects.toThrow(
       errorMessage
     );
   });
