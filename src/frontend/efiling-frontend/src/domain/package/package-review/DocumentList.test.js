@@ -160,7 +160,7 @@ describe("DocumentList Component Testsuite", () => {
 
   test("Delete document (click) success", async () => {
     // stub out service to return valid response.
-    pkgRvwService.deleteSubmittedDocument = jest.fn(() => Promise.resolve());
+    pkgRvwService.withdrawSubmittedDocument = jest.fn(() => Promise.resolve());
 
     const { container } = render(
       <DocumentList
@@ -176,13 +176,13 @@ describe("DocumentList Component Testsuite", () => {
     await waitFor(() => {});
 
     expect.assertions(1);
-    expect(pkgRvwService.deleteSubmittedDocument()).resolves.not.toThrow();
+    expect(pkgRvwService.withdrawSubmittedDocument()).resolves.not.toThrow();
   });
 
   test("Delete document (click) fail", async () => {
     const errorMessage = "Network Error";
     // stub out service to return failed response.
-    pkgRvwService.deleteSubmittedDocument = jest.fn(() =>
+    pkgRvwService.withdrawSubmittedDocument = jest.fn(() =>
       Promise.reject(new Error(errorMessage))
     );
 
@@ -200,14 +200,14 @@ describe("DocumentList Component Testsuite", () => {
     await waitFor(() => {});
 
     expect.assertions(1);
-    expect(pkgRvwService.deleteSubmittedDocument()).rejects.toThrow(
+    expect(pkgRvwService.withdrawSubmittedDocument()).rejects.toThrow(
       errorMessage
     );
   });
 
   test("Delete document (keyDown=13) success", async () => {
     // stub out service to return valid response.
-    pkgRvwService.deleteSubmittedDocument = jest.fn(() => Promise.resolve());
+    pkgRvwService.withdrawSubmittedDocument = jest.fn(() => Promise.resolve());
 
     const { container } = render(
       <DocumentList
@@ -226,20 +226,20 @@ describe("DocumentList Component Testsuite", () => {
     await waitFor(() => {});
 
     expect.assertions(1);
-    expect(pkgRvwService.deleteSubmittedDocument()).resolves.not.toThrow();
+    expect(pkgRvwService.withdrawSubmittedDocument()).resolves.not.toThrow();
 
     // get the span wrapping the file link, click it.
     fireEvent.keyDown(getByText(container, "withdraw"));
     await waitFor(() => {});
 
     expect.assertions(2);
-    expect(pkgRvwService.deleteSubmittedDocument()).resolves.not.toThrow();
+    expect(pkgRvwService.withdrawSubmittedDocument()).resolves.not.toThrow();
   });
 
   test("Delete document (keyDown) fail", async () => {
     const errorMessage = "Network Error";
     // stub out service to return failed response.
-    pkgRvwService.deleteSubmittedDocument = jest.fn(() =>
+    pkgRvwService.withdrawSubmittedDocument = jest.fn(() =>
       Promise.reject(new Error(errorMessage))
     );
 
@@ -260,7 +260,7 @@ describe("DocumentList Component Testsuite", () => {
     await waitFor(() => {});
 
     expect.assertions(1);
-    expect(pkgRvwService.deleteSubmittedDocument()).rejects.toThrow(
+    expect(pkgRvwService.withdrawSubmittedDocument()).rejects.toThrow(
       errorMessage
     );
   });
