@@ -253,7 +253,6 @@ describe("PackageReview Component", () => {
       court: courtData,
       submittedBy,
       submittedDate,
-      filingComments,
       documents,
     });
     mock.onDelete("/filingpackages/1/document/1").reply(200);
